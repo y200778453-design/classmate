@@ -62,10 +62,24 @@ classmate/
 - **作答引擎**：熱詞知識庫（簡潔/深入雙筆記）→ OpenAI 相容 API → 離線答題框架，永不空白。
 - **歷史**：SQLite（WAL），完整增刪查與匯出。
 
-## 安卓打包（概覽）
+## 安卓打包（已驗證的官方流程）
+
+打包工具 `pyside6-android-deploy` 隨 **Linux 版 PySide6 wheel** 分發（PyPI 無此獨立套件），
+因此打包須在 Linux（WSL2 或雲端）進行：
 
 ```bash
-pip install pyside6-android-deploy
-pyside6-android-deploy --name ClassMate --requirements "vosk==0.3.45,requests" run.py
+# Linux / WSL2 Ubuntu 一鍵打包（NDK r26b + SDK + Android wheels + 權限補丁全自動）：
+bash tools/build_apk.sh
 ```
+
+GitHub Actions 雲端打包：推送後自動觸發 .github/workflows/build-apk.yml，
+產出 APK 於 Artifacts（classmate-apk.zip）。
+
+**關鍵步驟（build_apk.sh 已封裝）：**
+1. `pip install PySide6==6.11.1`（Linux wheel 附帶 pyside6-android-deploy）
+2. 官方腳本下載 NDK r26b + SDK → `~/.pyside6-android-deploy`
+3. 下載 Qt 官方 Android wheels（pyside6/shiboken6 6.11.1 aarch64）
+4. `pyside6-android-deploy --dry-run` 產生 buildozer.spec → `tools/patch_buildozer.py` 注入權限/依賴/套件名
+5. `pyside6-android-deploy` 正式打包 → APK
+
 詳細步驟、權限與 **OPPO/ColorOS 後台運行設定**見 [android/README_OPPO_GUIDE.md](android/README_OPPO_GUIDE.md)。

@@ -2,23 +2,31 @@
 
 ## 1. 打包 APK
 
-前置：Python 3.10+、JDK 17、Android SDK（build-tools / platform-tools）、androiddeployqt 所需環境。
+`pyside6-android-deploy` 隨 **Linux 版 PySide6 wheel** 分發，須在 Linux（WSL2 / 雲端）執行。
 
 ```bash
-cd classmate
-pip install pyside6-android-deploy
-pyside6-android-deploy --name ClassMate \
-  --org "edu.kwnc.classmate" --version 1.0.0 \
-  --requirements "requests>=2.28" \
-  --extra-ignore-dirs "tests,docs,tools,models" \
-  run.py
+# 一鍵打包（推薦）：自動完成 JDK/NDK r26b/SDK/Android wheels/權限補丁
+bash tools/build_apk.sh
 ```
 
-產物：`pyside6_android_deploy/ClassMate/build/outputs/apk/debug/*.apk`。
-Release 版請先 `--release` 並配置簽名（keytool + apksigner）。
+或推送 GitHub 觸發雲端打包（.github/workflows/build-apk.yml）→ Actions 下載 classmate-apk.zip。
 
-> 注意：pyside6-android-deploy 需在 **Linux** 上執行（WSL2 Ubuntu 亦可）。
-> 若使用 jnius 原生語音，確認 `requirements` 包含 `pyjnius`。
+**手動步驟**（build_apk.sh 的內容）：
+```bash
+pip install "PySide6==6.11.1" jinja2 pkginfo tqdm "packaging==24.1"
+git clone --depth 1 --branch 6.11 https://github.com/qtproject/pyside-pyside-setup /tmp/pyside-setup
+python /tmp/pyside-setup/tools/cross_compile_android/main.py \
+  --download-only --skip-update --auto-accept-license -p android_arm64_v8a --api-level 35
+curl -fLO https://download.qt.io/official_releases/QtForPython/pyside6/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
+curl -fLO https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
+pyside6-android-deploy --dry-run --name ClassMate \
+  --wheel-pyside pyside6-6.11.1-*.whl --wheel-shiboken shiboken6-6.11.1-*.whl
+python tools/patch_buildozer.py   # 注入 RECORD_AUDIO 等權限 + requests/pyjnius 依賴
+pyside6-android-deploy --name ClassMate \
+  --wheel-pyside pyside6-6.11.1-*.whl --wheel-shiboken shiboken6-6.11.1-*.whl
+```
+
+產物：APK 位於專案目錄（buildozer bin_dir）；debug 模式為 .apk，release 為 .aab（需簽名）。
 
 ## 2. 需要的權限
 
