@@ -19,7 +19,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y openjdk-17-jdk unzip git libegl1 libxkbcommon0 \
-            libdbus-1-3 libfontconfig1 libnss3 libasound2t64
+            libdbus-1-3 libfontconfig1 libnss3 libasound2t64 \
+            libtool autoconf automake pkg-config zlib1g-dev libncurses-dev libffi-dev
 
       - name: Install deploy tool (ships with the Linux PySide6 wheel)
         run: pip install "PySide6==6.11.1" jinja2 pkginfo tqdm "packaging==24.1"
@@ -39,23 +40,9 @@ jobs:
           curl -fL -o models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
-      - name: First deploy pass (generates buildozer.spec + baseline APK)
+      - name: Build APK (patched spec via hook; 30-45 min)
         run: |
-          pyside6-android-deploy --name ClassMate --force \
-            --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
-            --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
-          ls -la buildozer.spec
-
-      - name: Patch buildozer.spec (permissions + deps + package name)
-        run: |
-          cp buildozer.spec /tmp/buildozer.spec.bak
-          python tools/patch_buildozer.py
-          cp buildozer.spec /tmp/buildozer.spec.patched
-
-      - name: Final build with patched spec
-        run: |
-          cp /tmp/buildozer.spec.patched buildozer.spec
-          pyside6-android-deploy --name ClassMate --force \
+          python tools/run_deploy.py --name ClassMate --force \
             --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
