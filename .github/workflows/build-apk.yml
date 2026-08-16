@@ -42,9 +42,11 @@ jobs:
 
       - name: Build APK (patched spec via hook; 30-45 min)
         run: |
-          python tools/run_deploy.py --name ClassMate --force \
+          python tools/run_deploy.py --name ClassMate --force --keep-deployment-files \
             --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
+          echo "=== APK locations ==="
+          find . -type f -name "*.apk" | head -20
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -52,5 +54,4 @@ jobs:
           name: classmate-apk
           path: |
             **/*.apk
-            !**/lib/**
           if-no-files-found: error

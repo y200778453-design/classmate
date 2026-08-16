@@ -35,7 +35,7 @@ curl -fL -o models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.wh
 echo "== [5/7] 系統建置依賴（libffi/p4a 需要 libtool/autoconf 等）=="
 sudo apt-get install -y libtool autoconf automake pkg-config zlib1g-dev libncurses-dev libffi-dev
 echo "== [6/7] 打包（run_deploy.py 自動在 spec 生成後打補丁；約 30-45 分鐘）=="
-python tools/run_deploy.py --name ClassMate --force \
+python tools/run_deploy.py --name ClassMate --force --keep-deployment-files \
   --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
   --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
