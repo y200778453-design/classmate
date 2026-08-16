@@ -20,7 +20,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y openjdk-17-jdk unzip git libegl1 libxkbcommon0 \
             libdbus-1-3 libfontconfig1 libnss3 libasound2t64 \
-            libtool autoconf automake pkg-config zlib1g-dev libncurses-dev libffi-dev
+            libtool autoconf automake pkg-config zlib1g-dev libncurses-dev libffi-dev libltdl-dev
 
       - name: Install deploy tool (ships with the Linux PySide6 wheel)
         run: pip install "PySide6==6.11.1" jinja2 pkginfo tqdm "packaging==24.1"
