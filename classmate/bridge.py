@@ -177,7 +177,13 @@ class ClassMateBridge(QObject):
         from . import recognizer as R
         eng = engine_override or R.create_recognizer(self.cfg, self._on_transcript, self._on_level)
         self._engine = eng
-        ok = eng.start()
+        try:
+            ok = eng.start()
+        except Exception as exc:
+            self._listening = False
+            self._set_status(f"⚠ 引擎啟動失敗：{exc}")
+            self._engine = None
+            return
         if eng.needs_audio():
             if self._capture.start():
                 self._feeder = threading.Thread(target=self._feed_loop, daemon=True)

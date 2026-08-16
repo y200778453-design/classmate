@@ -2,7 +2,10 @@
 from __future__ import annotations
 import time
 
-import requests
+try:
+    import requests  # optional dependency (not bundled on Android builds)
+except ImportError:  # pragma: no cover
+    requests = None
 
 from .config import AppConfig
 from .courses import CourseCatalog
@@ -36,6 +39,8 @@ class AnswerEngine:
 
     def answer_via_api(self, question: str, subject_id: str, mode: str) -> AnswerResult:
         """Call the configured OpenAI-compatible endpoint (blocking; run in a worker)."""
+        if requests is None:
+            raise RuntimeError("requests 未安裝（此建置未包含線上 AI 模組）")
         subject = self.catalog.get(subject_id)
         ctx = f"科目：{subject.name}（{subject.nameEn}）" if subject else "科目：未指定"
         payload = {

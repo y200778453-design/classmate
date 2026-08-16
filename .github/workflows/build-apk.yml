@@ -18,37 +18,38 @@ jobs:
       - name: System dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y openjdk-17-jdk unzip libegl1 libxkbcommon0 libdbus-1-3 \
-            libfontconfig1 libnss3 libasound2
+          sudo apt-get install -y openjdk-17-jdk unzip git libegl1 libxkbcommon0 \
+            libdbus-1-3 libfontconfig1 libnss3 libasound2
 
-      - name: Android SDK packages
+      - name: Install deploy tool (ships with the Linux PySide6 wheel)
+        run: pip install "PySide6==6.11.1" jinja2 pkginfo tqdm "packaging==24.1"
+
+      - name: Download Android NDK r26b + SDK (official script)
         run: |
-          if [ ! -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
-            mkdir -p "$HOME/android-sdk/cmdline-tools"
-            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
-            unzip -q -o /tmp/cmdtools.zip -d "$HOME/android-sdk/cmdline-tools"
-            mv "$HOME/android-sdk/cmdline-tools/cmdline-tools" "$HOME/android-sdk/cmdline-tools/latest"
-            export ANDROID_HOME="$HOME/android-sdk"
-            echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-          fi
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null 2>&1 || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install \
-            "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;27.2.12479018"
+          git clone --depth 1 --branch 6.11 https://github.com/qtproject/pyside-pyside-setup /tmp/pyside-setup
+          python /tmp/pyside-setup/tools/cross_compile_android/main.py \
+            --download-only --skip-update --auto-accept-license -p android_arm64_v8a --api-level 35
 
-      - name: Install deploy tool
-        run: pip install "PySide6==6.11.1" pyside6-android-deploy requests
-
-      - name: Deploy APK
+      - name: Download Qt for Python Android wheels (aarch64)
         run: |
-          pyside6-android-deploy --name ClassMate --org edu.kwnc.classmate --version 1.0.0 \
-            --requirements "requests>=2.28,pyjnius" --extra-ignore-dirs "tests,docs,tools,models" \
-            --permission android.permission.RECORD_AUDIO \
-            --permission android.permission.INTERNET \
-            --permission android.permission.POST_NOTIFICATIONS \
-            --permission android.permission.FOREGROUND_SERVICE \
-            --permission android.permission.SYSTEM_ALERT_WINDOW \
-            --permission android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS \
-            run.py
+          mkdir -p models/wheels
+          curl -fL -o models/wheels/pyside6-android.whl \
+            https://download.qt.io/official_releases/QtForPython/pyside6/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
+          curl -fL -o models/wheels/shiboken6-android.whl \
+            https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
+
+      - name: Generate and patch buildozer.spec
+        run: |
+          pyside6-android-deploy --dry-run --name ClassMate \
+            --wheel-pyside models/wheels/pyside6-android.whl \
+            --wheel-shiboken models/wheels/shiboken6-android.whl
+          python tools/patch_buildozer.py
+
+      - name: Build APK (first run 20-40 min)
+        run: |
+          pyside6-android-deploy --name ClassMate \
+            --wheel-pyside models/wheels/pyside6-android.whl \
+            --wheel-shiboken models/wheels/shiboken6-android.whl
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
