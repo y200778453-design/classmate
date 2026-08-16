@@ -27,21 +27,21 @@ python /tmp/pyside-setup/tools/cross_compile_android/main.py \
 
 echo "== [4/7] 下載 Qt for Python Android wheels (aarch64) =="
 mkdir -p models/wheels
-curl -fL -o models/wheels/pyside6-android.whl \
+curl -fL -o models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
   https://download.qt.io/official_releases/QtForPython/pyside6/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
-curl -fL -o models/wheels/shiboken6-android.whl \
+curl -fL -o models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
   https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
 echo "== [5/7] 產生並修補 buildozer.spec（權限 + 依賴 + 套件名）=="
 pyside6-android-deploy --dry-run --name ClassMate \
-  --wheel-pyside models/wheels/pyside6-android.whl \
-  --wheel-shiboken models/wheels/shiboken6-android.whl
+  --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
+  --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 python tools/patch_buildozer.py
 
 echo "== [6/7] 正式打包（首次約 20-40 分鐘）=="
 pyside6-android-deploy --name ClassMate \
-  --wheel-pyside models/wheels/pyside6-android.whl \
-  --wheel-shiboken models/wheels/shiboken6-android.whl
+  --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
+  --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
 echo "== [7/7] 完成！APK 位置：=="
 find . -type f -name "*.apk" | grep -v "/lib/" | sort

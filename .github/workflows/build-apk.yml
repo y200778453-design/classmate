@@ -34,23 +34,23 @@ jobs:
       - name: Download Qt for Python Android wheels (aarch64)
         run: |
           mkdir -p models/wheels
-          curl -fL -o models/wheels/pyside6-android.whl \
+          curl -fL -o models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             https://download.qt.io/official_releases/QtForPython/pyside6/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
-          curl -fL -o models/wheels/shiboken6-android.whl \
+          curl -fL -o models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
       - name: Generate and patch buildozer.spec
         run: |
           pyside6-android-deploy --dry-run --name ClassMate \
-            --wheel-pyside models/wheels/pyside6-android.whl \
-            --wheel-shiboken models/wheels/shiboken6-android.whl
+            --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
+            --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
           python tools/patch_buildozer.py
 
       - name: Build APK (first run 20-40 min)
         run: |
           pyside6-android-deploy --name ClassMate \
-            --wheel-pyside models/wheels/pyside6-android.whl \
-            --wheel-shiboken models/wheels/shiboken6-android.whl
+            --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
+            --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
