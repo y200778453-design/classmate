@@ -7,7 +7,7 @@ cd "$ROOT"
 echo "== [1/7] 系統依賴 =="
 sudo apt-get update -y
 sudo apt-get install -y openjdk-17-jdk unzip wget git python3 python3-pip python3-venv \
-  libgl1 libegl1 libxkbcommon0 libdbus-1-3 libfontconfig1 libnss3 libasound2
+  libgl1 libegl1 libxkbcommon0 libdbus-1-3 libfontconfig1 libnss3 libasound2t64
 
 echo "== [2/7] Python 環境（PySide6 Linux wheel 內含 pyside6-android-deploy）=="
 python3 -m venv .venv
