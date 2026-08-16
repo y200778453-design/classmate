@@ -17,6 +17,7 @@ pip install "PySide6==6.11.1" jinja2 pkginfo tqdm "packaging==24.1"
 
 echo "== [3/7] NDK r26b + SDK（官方腳本，快取於 ~/.pyside6-android-deploy）=="
 git clone --depth 1 --branch 6.11 https://github.com/qtproject/pyside-pyside-setup /tmp/pyside-setup
+pip install GitPython
 python /tmp/pyside-setup/tools/cross_compile_android/main.py \
   --download-only --skip-update --auto-accept-license -p android_arm64_v8a --api-level 35
 
