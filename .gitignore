@@ -10,3 +10,6 @@ docs/shots_demo/
 docs/shots_final/
 buildozer.spec
 .buildozer/
+dist/
+deployment/
+
