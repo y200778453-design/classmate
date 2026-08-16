@@ -9,8 +9,12 @@ sudo apt-get update -y
 sudo apt-get install -y openjdk-17-jdk unzip wget git python3 python3-pip python3-venv \
   libgl1 libegl1 libxkbcommon0 libdbus-1-3 libfontconfig1 libnss3 libasound2t64
 
-echo "== [2/7] Python 環境（PySide6 Linux wheel 內含 pyside6-android-deploy）=="
-python3 -m venv .venv
+echo "== [2/7] Python 3.11 環境（pyside6-android-deploy 要求 ≤3.11）=="
+if ! command -v python3.11 >/dev/null 2>&1; then
+  sudo add-apt-repository -y ppa:deadsnakes/ppa
+  sudo apt-get install -y python3.11 python3.11-venv
+fi
+python3.11 -m venv .venv
 . .venv/bin/activate
 pip install -U pip
 pip install "PySide6==6.11.1" jinja2 pkginfo tqdm "packaging==24.1"
