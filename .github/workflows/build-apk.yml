@@ -47,6 +47,7 @@ jobs:
             --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
           echo "=== APK locations ==="
           find . -type f -name "*.apk" | head -20
+          test -n "$(find . -type f -name '*.apk' | head -1)" || { echo "NO APK PRODUCED - deploy swallowed an error"; exit 1; }
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

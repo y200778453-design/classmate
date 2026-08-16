@@ -30,8 +30,8 @@ def main():
 
     original_initialize = bzmod.Buildozer.initialize
 
-    def patched_initialize(config):
-        original_initialize(config)
+    def patched_initialize(*args, **kwargs):
+        original_initialize(*args, **kwargs)
         r = subprocess.run([sys.executable, str(HOOK)], cwd=Path.cwd())
         if r.returncode != 0:
             raise RuntimeError("patch_buildozer.py failed with code %d" % r.returncode)
