@@ -32,14 +32,14 @@ curl -fL -o models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl 
 curl -fL -o models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
   https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
-echo "== [5/7] 產生並修補 buildozer.spec（權限 + 依賴 + 套件名）=="
-pyside6-android-deploy --dry-run --name ClassMate \
+echo "== [5/7] 第一次建置：產生 buildozer.spec（基礎 APK）=="
+pyside6-android-deploy --name ClassMate --force \
   --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
   --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
+echo "== [6/7] 修補 buildozer.spec（權限+依賴+套件名）並二次建置 =="
+cp buildozer.spec /tmp/buildozer.spec.bak
 python tools/patch_buildozer.py
-
-echo "== [6/7] 正式打包（首次約 20-40 分鐘）=="
-pyside6-android-deploy --name ClassMate \
+pyside6-android-deploy --name ClassMate --force \
   --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
   --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 

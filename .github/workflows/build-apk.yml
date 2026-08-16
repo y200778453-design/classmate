@@ -39,16 +39,23 @@ jobs:
           curl -fL -o models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
-      - name: Generate and patch buildozer.spec
+      - name: First deploy pass (generates buildozer.spec + baseline APK)
         run: |
-          pyside6-android-deploy --dry-run --name ClassMate \
+          pyside6-android-deploy --name ClassMate --force \
             --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
-          python tools/patch_buildozer.py
+          ls -la buildozer.spec
 
-      - name: Build APK (first run 20-40 min)
+      - name: Patch buildozer.spec (permissions + deps + package name)
         run: |
-          pyside6-android-deploy --name ClassMate \
+          cp buildozer.spec /tmp/buildozer.spec.bak
+          python tools/patch_buildozer.py
+          cp buildozer.spec /tmp/buildozer.spec.patched
+
+      - name: Final build with patched spec
+        run: |
+          cp /tmp/buildozer.spec.patched buildozer.spec
+          pyside6-android-deploy --name ClassMate --force \
             --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl \
             --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_aarch64.whl
 
