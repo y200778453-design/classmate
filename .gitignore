@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+models/
+*.db
+*.sqlite3
+.pytest_cache/
+docs/shots/
+docs/shots_demo/
+docs/shots_final/

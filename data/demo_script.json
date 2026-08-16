@@ -1,0 +1,17 @@
+{
+  "subjectId": "ic",
+  "steps": [
+    {"at": 0.6, "cmd": "page:listen"},
+    {"at": 1.2, "cmd": "start"},
+    {"at": 2.0, "utter": {"text": "今日我哋繼續講醫院感染嘅控制，大家留心聽。", "lang": "yue"}},
+    {"at": 4.6, "utter": {"text": "咩係標準預防措施？", "lang": "yue"}},
+    {"at": 8.4, "utter": {"text": "What is the difference between disinfection and sterilization?", "lang": "en"}},
+    {"at": 12.6, "utter": {"text": "李小明，你嚟答下MRSA要點樣隔離？", "lang": "yue"}},
+    {"at": 17.0, "utter": {"text": "為什麼多重耐藥菌越來越常見？", "lang": "zh"}},
+    {"at": 21.0, "cmd": "page:subjects"},
+    {"at": 25.0, "cmd": "page:history"},
+    {"at": 29.0, "cmd": "page:settings"},
+    {"at": 33.0, "cmd": "page:listen"},
+    {"at": 35.0, "utter": {"text": "好，今日講到呢度，下堂再續。", "lang": "yue"}}
+  ]
+}

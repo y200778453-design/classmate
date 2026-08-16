@@ -1,0 +1,60 @@
+name: Build ClassMate APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jdk unzip libegl1 libxkbcommon0 libdbus-1-3 \
+            libfontconfig1 libnss3 libasound2
+
+      - name: Android SDK packages
+        run: |
+          if [ ! -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" ]; then
+            mkdir -p "$HOME/android-sdk/cmdline-tools"
+            wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
+            unzip -q -o /tmp/cmdtools.zip -d "$HOME/android-sdk/cmdline-tools"
+            mv "$HOME/android-sdk/cmdline-tools/cmdline-tools" "$HOME/android-sdk/cmdline-tools/latest"
+            export ANDROID_HOME="$HOME/android-sdk"
+            echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          fi
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null 2>&1 || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install \
+            "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;27.2.12479018"
+
+      - name: Install deploy tool
+        run: pip install "PySide6==6.11.1" pyside6-android-deploy requests
+
+      - name: Deploy APK
+        run: |
+          pyside6-android-deploy --name ClassMate --org edu.kwnc.classmate --version 1.0.0 \
+            --requirements "requests>=2.28,pyjnius" --extra-ignore-dirs "tests,docs,tools,models" \
+            --permission android.permission.RECORD_AUDIO \
+            --permission android.permission.INTERNET \
+            --permission android.permission.POST_NOTIFICATIONS \
+            --permission android.permission.FOREGROUND_SERVICE \
+            --permission android.permission.SYSTEM_ALERT_WINDOW \
+            --permission android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS \
+            run.py
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: classmate-apk
+          path: |
+            **/*.apk
+            !**/lib/**
+          if-no-files-found: error

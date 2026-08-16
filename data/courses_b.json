@@ -1,0 +1,499 @@
+{
+  "school": "澳門鏡湖護理學院 Kiang Wu Nursing College of Macau",
+  "programme": "護理學學士學位課程 Bachelor of Science in Nursing",
+  "year": 3,
+  "source": "https://www2.kwnc.edu.mo/zh_hant/standard/undergraduate_programmes.html (課程計劃圖)",
+  "note": "核心/選修科目（大三常修）+ 熱詞庫。",
+  "subjects": [
+    {
+      "id": "eng3",
+      "name": "英語III",
+      "nameEn": "English III",
+      "icon": "📖",
+      "color": "#FFC94D",
+      "kind": "核心",
+      "year": 3,
+      "hotwords": [
+        {
+          "term": "Medical terminology",
+          "aliases": [
+            "medical terms",
+            "terminology"
+          ],
+          "concise": "詞根＋前綴＋後綴拆解醫護詞彙，如 hypo-（低）＋ glyc(o)-（糖）＋ -emia（血症）。",
+          "deep": "常用後綴：-itis 炎症、-ectomy 切除、-ostomy 造口、-oma 腫瘤。\n學習法：按系統整理詞根表、結合臨床情境記憶。"
+        },
+        {
+          "term": "Patient handover",
+          "aliases": [
+            "handover",
+            "shift report"
+          ],
+          "concise": "Use SBAR: Situation, Background, Assessment, Recommendation.",
+          "deep": "Example: \"S: Mr Chan is tachypnoeic. B: COPD history. A: SpO2 86%, wheeze. R: Please review and consider nebuliser.\"\nTip: concise, structured, no jargon overload."
+        },
+        {
+          "term": "Vital signs charting",
+          "aliases": [
+            "charting",
+            "documentation"
+          ],
+          "concise": "Record TPR, BP, SpO2 and pain score accurately with time and units; trends matter more than single readings.",
+          "deep": "Documenting: use 24-hour format, note abnormal findings and actions taken; avoid vague terms like \"normal\"."
+        },
+        {
+          "term": "Informed consent",
+          "aliases": [
+            "consent"
+          ],
+          "concise": "Patient's voluntary agreement after understanding purpose, risks, benefits and alternatives.",
+          "deep": "Nurse's role: witness the signature, check understanding, answer questions, ensure no coercion; document concerns raised."
+        },
+        {
+          "term": "Discharge planning",
+          "aliases": [
+            "discharge"
+          ],
+          "concise": "Prepare patients for home: medications, wound care, follow-up appointments, red flags.",
+          "deep": "Teach-back method: ask the patient to repeat instructions in their own words to confirm understanding."
+        },
+        {
+          "term": "SBAR communication",
+          "aliases": [
+            "SBAR"
+          ],
+          "concise": "Standard structured tool for nurse-doctor communication; reduces omissions in urgent calls.",
+          "deep": "Prepare before calling: latest vitals, background, your assessment, what you need; keep it under 60 seconds."
+        }
+      ]
+    },
+    {
+      "id": "en4n",
+      "name": "護理英語",
+      "nameEn": "English for Nursing",
+      "icon": "💬",
+      "color": "#7FE3FF",
+      "kind": "選修",
+      "year": 3,
+      "hotwords": [
+        {
+          "term": "Nursing diagnosis",
+          "aliases": [
+            "PES"
+          ],
+          "concise": "Clinical judgement about patient responses; PES format (Problem, Etiology, Signs/symptoms).",
+          "deep": "Example: \"Impaired gas exchange related to pneumonia as evidenced by SpO2 88% and dyspnoea.\"\nDifferent from a medical diagnosis."
+        },
+        {
+          "term": "Medication administration",
+          "aliases": [
+            "drug administration"
+          ],
+          "concise": "Five rights: right patient, drug, dose, route, time — plus documentation.",
+          "deep": "Vocabulary: route (oral, IV, IM, SC), side effect, contraindication; check allergies before every dose."
+        },
+        {
+          "term": "Wound care",
+          "aliases": [
+            "wound"
+          ],
+          "concise": "Assess size, depth, exudate, surrounding skin and signs of infection; document objectively.",
+          "deep": "Terms: slough, granulation, epithelialisation, dehiscence; choose the dressing by exudate level."
+        },
+        {
+          "term": "Palliative care",
+          "aliases": [
+            "palliative"
+          ],
+          "concise": "Comfort-focused care: symptom control, dignity, family support.",
+          "deep": "Discussing goals of care sensitively; vocabulary: advance directive, hospice, comfort measures."
+        },
+        {
+          "term": "Infection control",
+          "aliases": [
+            "IPC"
+          ],
+          "concise": "Standard precautions plus transmission-based precautions vocabulary: hand hygiene, PPE, isolation.",
+          "deep": "Phrases: \"Contact precautions are required\", \"Observe the five moments of hand hygiene\"."
+        },
+        {
+          "term": "Patient education",
+          "aliases": [
+            "teaching",
+            "teach-back"
+          ],
+          "concise": "Teach-back: explain simply, then ask the patient to demonstrate understanding.",
+          "deep": "Use plain language, avoid jargon; confirm literacy level and language preference."
+        },
+        {
+          "term": "Cultural competence",
+          "aliases": [
+            "culture"
+          ],
+          "concise": "Respect patients' cultural beliefs and practices in care planning.",
+          "deep": "Ask about dietary, religious and family decision-making preferences; use interpreter services when needed."
+        }
+      ]
+    },
+    {
+      "id": "crd",
+      "name": "臨床推理與決策",
+      "nameEn": "Clinical Reasoning & Decision Making",
+      "icon": "🧩",
+      "color": "#C792FF",
+      "kind": "選修",
+      "year": 3,
+      "hotwords": [
+        {
+          "term": "臨床推理循環",
+          "aliases": [
+            "clinical reasoning cycle"
+          ],
+          "concise": "收集線索 → 處理資訊 → 識別問題 → 設目標 → 行動 → 評值 → 反思；循環推進。",
+          "deep": "Levett-Jones 八階段模型常用於教學；新手易犯「線索收集不足即下結論」。\n應用：每個臨床個案按循環自問「我遺漏了什麼線索」。"
+        },
+        {
+          "term": "危險信號",
+          "aliases": [
+            "red flags"
+          ],
+          "concise": "提示病情危重的警訊：意識改變、呼吸窘迫、血壓急降、胸痛、大出血等；見即行動並報告。",
+          "deep": "例子：術後心動過速＋低血壓 → 內出血；頭痛＋頸強直 → 腦膜炎。\n護理：將 red flags 納入每班評估清單。"
+        },
+        {
+          "term": "鑑別診斷",
+          "aliases": [
+            "differential diagnosis"
+          ],
+          "concise": "同一表現多種可能，列舉並比較（如胸痛：心梗/肺栓塞/主動脈夾層/氣胸）；護理上據此準備不同處置。",
+          "deep": "思維：先排除最危險的（「先想殺手」）。\n配合：病史、體檢、輔助檢查逐項縮小範圍。"
+        },
+        {
+          "term": "認知偏差",
+          "aliases": [
+            "cognitive bias"
+          ],
+          "concise": "錨定（過度依賴第一印象）、確認偏誤（只找支持證據）、可得性（近期案例影響判斷）；認識偏差可減少誤判。",
+          "deep": "對策：刻意找反證、使用結構化評估工具、團隊覆核、反思病例。\n臨床例子：年輕病人胸痛被輕視——錨定效應。"
+        },
+        {
+          "term": "早期預警評分",
+          "aliases": [
+            "NEWS",
+            "early warning score"
+          ],
+          "concise": "呼吸、SpO2、體溫、收縮壓、脈搏、意識六項計分；≥5 分或單項 3 分＝升級處理。",
+          "deep": "用途：及早識別病情惡化、啟動快速反應。\n護理：每班及病情變化時評分、趨勢上升即報告。"
+        },
+        {
+          "term": "安全文化",
+          "aliases": [
+            "safety culture",
+            "speak up"
+          ],
+          "concise": "不責難、鼓勵上報不良事件、從系統找原因；以「人會犯錯」的設計思維防錯。",
+          "deep": "工具：根本原因分析（RCA）、失效模式分析（FMEA）、checklist（如手術安全核查）。\n護理：敢說「停」的文化（speak up）。"
+        },
+        {
+          "term": "反思實踐",
+          "aliases": [
+            "reflective practice",
+            "Gibbs"
+          ],
+          "concise": "事後結構化回顧（如 Gibbs）：事實 → 感受 → 分析 → 學到什麼 → 如何改進；提升臨床判斷。",
+          "deep": "方法：反思日誌、同儕討論、個案研討。\n要點：聚焦可改變的因素，不空泛自責。"
+        }
+      ]
+    },
+    {
+      "id": "epi",
+      "name": "流行病學",
+      "nameEn": "Epidemiology",
+      "icon": "📊",
+      "color": "#4DD0FF",
+      "kind": "選修",
+      "year": 3,
+      "hotwords": [
+        {
+          "term": "發生率與盛行率",
+          "aliases": [
+            "incidence",
+            "prevalence"
+          ],
+          "concise": "發生率＝新病例/人時（衡量風險）；盛行率＝現存病例/人口（衡量負擔）；「新發 vs 現存」。",
+          "deep": "公式：Incidence＝新發病例數/觀察人時；Prevalence＝某時點病例數/總人口。\n應用：急性病看發生率、慢性病看盛行率。"
+        },
+        {
+          "term": "相對危險",
+          "aliases": [
+            "RR",
+            "relative risk"
+          ],
+          "concise": "暴露組發病率 ÷ 非暴露組發病率；RR>1 危險因素、<1 保護因素；用於隊列研究。",
+          "deep": "例：吸煙者肺癌發生率 0.1%、非吸煙 0.01% → RR＝10。\n解釋：RR 衡量關聯強度，不能單獨證明因果。"
+        },
+        {
+          "term": "勝算比",
+          "aliases": [
+            "OR",
+            "odds ratio"
+          ],
+          "concise": "病例對照研究的關聯指標：病例組暴露勝算 ÷ 對照組暴露勝算；罕見病近似 RR。",
+          "deep": "2×2 表：OR＝ad/bc。\n應用：疾病罕見或需快速研究時選病例對照設計。"
+        },
+        {
+          "term": "隊列研究",
+          "aliases": [
+            "cohort study"
+          ],
+          "concise": "按暴露分組前瞻追蹤發病；可算發生率與 RR；證據力較強但耗時昂貴。",
+          "deep": "類型：前瞻性/回顧性隊列。\n優點：時序清楚、可研究多種結局；缺點：罕見病不適用、失訪偏倚。"
+        },
+        {
+          "term": "病例對照研究",
+          "aliases": [
+            "case-control study"
+          ],
+          "concise": "由果溯因：選病例組與對照組回顧暴露史；算 OR；適合罕見病、快速便宜。",
+          "deep": "偏倚：回憶偏倚、選擇偏倚。\n設計要點：對照組來自同一人群、以配對控制混雜。"
+        },
+        {
+          "term": "隨機對照試驗",
+          "aliases": [
+            "RCT",
+            "randomized controlled trial"
+          ],
+          "concise": "隨機分組＋對照＋盲法，證據等級最高的干預研究；護理循證的金標準來源。",
+          "deep": "要素：隨機化消除選擇偏倚、盲法減少測量偏倚、ITT 意向治療分析。\n應用：評價護理措施效果。"
+        },
+        {
+          "term": "篩檢指標",
+          "aliases": [
+            "sensitivity",
+            "specificity"
+          ],
+          "concise": "敏感度＝有病者檢出陽性比例（漏診少）；特異度＝無病者檢出陰性比例（誤診少）；兩者權衡。",
+          "deep": "公式：Se＝TP/(TP+FN)、Sp＝TN/(TN+FP)。\n應用：癌症篩查取高敏感度；確診試驗取高特異度；陽性預測值受盛行率影響。"
+        }
+      ]
+    },
+    {
+      "id": "ntheory",
+      "name": "護理理論",
+      "nameEn": "Nursing Theory",
+      "icon": "📚",
+      "color": "#FF9E80",
+      "kind": "選修",
+      "year": 3,
+      "hotwords": [
+        {
+          "term": "Orem自護理論",
+          "aliases": [
+            "self-care",
+            "Orem"
+          ],
+          "concise": "護理是協助個體完成自護活動；自護不足時提供完全補償、部分補償、支持教育三系統。",
+          "deep": "核心：自護需求 > 自護能力 ＝ 護理需要。\n應用：康復期病人教育自護技能（如糖尿病自我管理）。"
+        },
+        {
+          "term": "Roy適應模式",
+          "aliases": [
+            "adaptation model",
+            "Roy"
+          ],
+          "concise": "人是適應系統，護理促進生理、自我概念、角色功能、相互依賴四方面的適應。",
+          "deep": "刺激分：主要刺激、相關刺激、固有刺激。\n應用：評估病人對疾病與角色的適應反應，制訂促進適應措施。"
+        },
+        {
+          "term": "Neuman系統模式",
+          "aliases": [
+            "Neuman",
+            "systems model"
+          ],
+          "concise": "人為開放系統，護理著重初級、次級、三級預防以維持穩定；壓力源穿透防禦線即失衡。",
+          "deep": "核心：彈性防禦線、正常防禦線、抵抗線。\n應用：壓力評估與三級預防框架（如術前教育＝初級預防）。"
+        },
+        {
+          "term": "Peplau人際關係理論",
+          "aliases": [
+            "Peplau",
+            "interpersonal relations"
+          ],
+          "concise": "護理是護患人際互動過程：認識期 → 確認期 → 進展期 → 解決期；溝通是核心工具。",
+          "deep": "護士角色：陌生人、資源者、教育者、領導者、代理者、諮詢者。\n應用：精神科護理建立治療性關係。"
+        },
+        {
+          "term": "Watson關懷理論",
+          "aliases": [
+            "Watson",
+            "caring theory"
+          ],
+          "concise": "護理本質是關懷（caring）；十大關懷要素，強調全人、超越疾病的人際連結。",
+          "deep": "應用：以病人為中心、尊重尊嚴、治療性環境、靈性關懷。\n影響：現代護理「以關懷為核心」的文化。"
+        },
+        {
+          "term": "護理典範",
+          "aliases": [
+            "metaparadigm"
+          ],
+          "concise": "護理學科四大概念：人、環境、健康、護理；所有護理理論均圍繞四概念建構。",
+          "deep": "人：生理心理社會靈性整體；環境：內外環境互動；健康：動態的完好狀態；護理：科學＋藝術的助人專業。"
+        },
+        {
+          "term": "循證護理",
+          "aliases": [
+            "EBP",
+            "evidence-based practice"
+          ],
+          "concise": "整合最佳研究證據＋臨床經驗＋病人意願作決策；五步：提問（PICO）→ 檢索 → 評讀 → 應用 → 評值。",
+          "deep": "PICO：病人/問題、介入、對照、結局。\n證據等級：系統綜述/RCT 最高。\n應用：臨床指引制訂與護理措施選擇。"
+        }
+      ]
+    },
+    {
+      "id": "reh",
+      "name": "康復護理概論",
+      "nameEn": "Introduction to Rehabilitation Nursing",
+      "icon": "♿",
+      "color": "#8CE99A",
+      "kind": "選修",
+      "year": 3,
+      "hotwords": [
+        {
+          "term": "康復目標",
+          "aliases": [
+            "rehabilitation goals"
+          ],
+          "concise": "最大限度恢復功能、提升獨立性與生活質量；以病人為中心訂 SMART 目標、跨專業合作。",
+          "deep": "團隊：康復醫師、物理/職能/言語治療師、護士、社工。\n護理角色：24 小時延續訓練、防併發症、家屬教育。"
+        },
+        {
+          "term": "日常生活活動",
+          "aliases": [
+            "ADL",
+            "Barthel"
+          ],
+          "concise": "進食、沐浴、穿衣、如廁、轉移、大小便控制等自理能力；評估工具 Barthel 指數。",
+          "deep": "Barthel 0–100 分：>60 基本自理、40–60 中度依賴、<40 重度依賴。\n護理：按能力分級輔助、鼓勵最大參與（用進廢退）。"
+        },
+        {
+          "term": "關節活動度",
+          "aliases": [
+            "ROM",
+            "range of motion"
+          ],
+          "concise": "被動/主動/助力運動維持關節功能，防攣縮；每日多次、緩慢到位、不超過痛點。",
+          "deep": "適應：長期臥床、中風偏癱、術後固定。\n注意：急性炎症期避免過度活動；配合良肢位擺放。"
+        },
+        {
+          "term": "體位轉移",
+          "aliases": [
+            "transfer",
+            "mobility"
+          ],
+          "concise": "床椅轉移、翻身技巧；原則：靠近、屈膝、借力、護腰；使用轉移板/吊機輔助。",
+          "deep": "安全：輪椅剎車、移除障礙、病人鞋子防滑。\n護理：評估病人能力選擇輔助等級、教導照顧者正確用力。"
+        },
+        {
+          "term": "輔具使用",
+          "aliases": [
+            "assistive devices",
+            "walking aids"
+          ],
+          "concise": "拐杖/助行器/輪椅選擇與調校；助行器高度＝腕橫紋；正確步態訓練防二次傷害。",
+          "deep": "原則：評估肌力平衡 → 選輔具 → 教用 → 複評。\n安全：定期檢查防滑墊與剎車。"
+        },
+        {
+          "term": "腦中風康復",
+          "aliases": [
+            "stroke rehabilitation"
+          ],
+          "concise": "黃金康復期 3–6 個月；早期介入：良肢位擺放、翻身、坐位訓練；防併發症（壓瘡、攣縮、誤吸）。",
+          "deep": "分期：急性期（被動活動、體位）→ 恢復期（坐站轉移、ADL）→ 後遺症期（代償策略）。\n護理：吞嚥評估後進食、防跌倒、心理支持。"
+        },
+        {
+          "term": "二級預防",
+          "aliases": [
+            "secondary prevention"
+          ],
+          "concise": "已有疾病後防再發與惡化（如中風後控制血壓血糖、抗血小板、戒煙）。",
+          "deep": "與三級預防區別：三級＝防殘障、促進康復。\n護理：出院教育（用藥、危險因子、複診）、連結社區康復資源。"
+        }
+      ]
+    },
+    {
+      "id": "pall",
+      "name": "紓緩及安寧療護",
+      "nameEn": "Hospice & Palliative Care",
+      "icon": "🕊",
+      "color": "#FFB3C6",
+      "kind": "選修",
+      "year": 3,
+      "hotwords": [
+        {
+          "term": "安寧療護原則",
+          "aliases": [
+            "hospice",
+            "palliative principles"
+          ],
+          "concise": "尊重生命、不加速不延緩死亡；目標：舒適、尊嚴、生活質量；全人全家全程全隊照顧。",
+          "deep": "四全：全人（身心社靈）、全家（家屬支持）、全程（診斷至哀傷）、全隊（跨專業）。\n介入時機：不限末期，早介入獲益更大。"
+        },
+        {
+          "term": "疼痛三階梯",
+          "aliases": [
+            "WHO analgesic ladder",
+            "pain ladder"
+          ],
+          "concise": "輕度痛 → 非鴉片類（撲熱息痛/NSAIDs）；中度 → 弱鴉片（可待因/曲馬多）；重度 → 強鴉片（嗎啡）；按時給藥＋按需補量。",
+          "deep": "原則：口服優先、按時（by the clock）、按階梯、個體化、注意細節（便秘防治）。\n評估：數字量表；鴉片類常規配緩瀉劑。"
+        },
+        {
+          "term": "嗎啡迷思",
+          "aliases": [
+            "morphine",
+            "opioids"
+          ],
+          "concise": "誤解：嗎啡＝上癮/加速死亡/最後手段；事實：規範使用成癮罕見、按滴定不會加速死亡、早用改善生活質量。",
+          "deep": "副作用處理：便秘（必配緩瀉劑）、噁心（初期可耐受）、嗜睡（短期）、呼吸抑制（過量時）。\n護理：教育家屬、記錄鎮痛效果。"
+        },
+        {
+          "term": "呼吸困難處置",
+          "aliases": [
+            "dyspnoea",
+            "breathlessness"
+          ],
+          "concise": "末期呼吸困難：體位（坐起前傾）、風扇吹面、低氧時氧療、小劑量嗎啡、安寧陪伴。",
+          "deep": "非藥物優先：開窗通風、放鬆、分散注意力。\n護理：評估主觀感受（病人主訴為準）、減少焦慮、家屬指導。"
+        },
+        {
+          "term": "臨終關懷與哀傷輔導",
+          "aliases": [
+            "end-of-life care",
+            "grief"
+          ],
+          "concise": "臨終徵象：意識改變、呼吸型態改變（潮式呼吸）、末梢冰冷、尿少；護理：口腔皮膚護理、舒適體位、家屬陪伴、不孤獨離世。",
+          "deep": "溝通：傾聽多於說教、允許情緒表達、協助道別道謝道歉道愛。\n哀傷輔導：正常哀傷支持、複雜哀傷轉介。"
+        },
+        {
+          "term": "預設醫療指示",
+          "aliases": [
+            "advance directive",
+            "AMD"
+          ],
+          "concise": "預先表達末期醫療意願；澳門《預設醫療指示》法律框架下具效力；護理：尊重、見證、記錄。",
+          "deep": "內容：如拒絕維持生命治療（心肺復甦、人工呼吸）。\n護理角色：資訊提供、確保知情自願、跨專業溝通、家屬教育。"
+        },
+        {
+          "term": "全人照顧",
+          "aliases": [
+            "holistic care",
+            "spiritual care"
+          ],
+          "concise": "身（症狀控制）、心（情緒支持）、社（社會關係）、靈（意義與靈性）四維度整體照顧。",
+          "deep": "靈性照顧：協助回顧人生、完成心願、宗教支持、意義建構。\n護理：以病人價值觀為中心、多學科協作、照顧者喘息服務。"
+        }
+      ]
+    }
+  ]
+}
