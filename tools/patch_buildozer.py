@@ -20,7 +20,8 @@ PERMISSIONS = [
 ]
 
 # PySide6 Android wheels are cp311-only; p4a defaults to 3.14 -> must pin 3.11
-REQUIREMENTS = "python3==3.11.9,shiboken6,PySide6,requests,pyjnius"
+# (hostpython3 must match python3 exactly, or p4a aborts the build)
+REQUIREMENTS = "hostpython3==3.11.9,python3==3.11.9,shiboken6,PySide6,requests,pyjnius"
 
 PACKAGE_NAME = "classmate"
 PACKAGE_DOMAIN = "edu.kwnc"
