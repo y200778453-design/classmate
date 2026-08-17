@@ -23,6 +23,8 @@ REQUIREMENTS = "python3,shiboken6,PySide6,requests,pyjnius"
 
 PACKAGE_NAME = "classmate"
 PACKAGE_DOMAIN = "edu.kwnc"
+VERSION = "1.1"
+INCLUDE_EXTS = "py,pyc,png,jpg,kv,atlas,ttf,qml,js,json"
 
 
 def set_value(lines, key, value):
@@ -50,6 +52,8 @@ def main():
     lines = set_value(lines, "android.permissions", ", ".join(PERMISSIONS))
     lines = set_value(lines, "package.name", PACKAGE_NAME)
     lines = set_value(lines, "package.domain", PACKAGE_DOMAIN)
+    lines = set_value(lines, "version", VERSION)
+    lines = set_value(lines, "source.include_exts", INCLUDE_EXTS)
     spec.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("[patch] requirements:", REQUIREMENTS)
     print("[patch] permissions:", ", ".join(PERMISSIONS))
