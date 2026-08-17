@@ -176,12 +176,18 @@ class ClassMateBridge(QObject):
             return
         from . import recognizer as R
         eng = engine_override or R.create_recognizer(self.cfg, self._on_transcript, self._on_level)
+        if hasattr(eng, "set_on_error"):
+            eng.set_on_error(self._on_engine_error)
         self._engine = eng
         try:
             ok = eng.start()
         except Exception as exc:
             self._listening = False
             self._set_status(f"⚠ 引擎啟動失敗：{exc}")
+            self._engine = None
+            return
+        if ok is False:
+            self._listening = False
             self._engine = None
             return
         if eng.needs_audio():
@@ -194,6 +200,10 @@ class ClassMateBridge(QObject):
         self.listeningChanged.emit(True)
         self._set_status(f"聆聽中 · {eng.name}" + ("" if eng.needs_audio() else "（演示）"))
         self._emit_stats()
+
+    def _on_engine_error(self, msg: str):
+        self._set_status("⚠ " + msg)
+        self.toast.emit({"kind": "error", "text": msg})
 
     def capture_last_error(self):
         return self._capture.last_error

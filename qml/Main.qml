@@ -12,6 +12,7 @@ ApplicationWindow {
     minimumWidth: 340
     minimumHeight: 600
     visible: true
+    visibility: Qt.platform.os === "android" ? Window.FullScreen : Window.Windowed
     title: "課堂智聽 ClassMate"
     color: Theme.bgTop
 

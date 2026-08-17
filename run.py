@@ -64,8 +64,10 @@ def build_app(argv=None):
     app._qml_engine = engine          # keep engine/window alive beyond this scope
     app._classmate_bridge = bridge
     window = engine.rootObjects()[0]
-    window.setProperty("width", int(420 * args.scale))
-    window.setProperty("height", int(880 * args.scale))
+    is_android = getattr(sys, "platform", "").startswith("android") or "ANDROID_ARGUMENT" in os.environ
+    if not is_android:
+        window.setProperty("width", int(420 * args.scale))
+        window.setProperty("height", int(880 * args.scale))
 
     tray = None
     if use_widgets and cfg.get("backgroundTray", True):
