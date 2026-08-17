@@ -1,10 +1,14 @@
-"""SQLite history store (thread-safe)."""
+"""History store: SQLite when available, JSON-file fallback otherwise (thread-safe)."""
 from __future__ import annotations
 import json
-import sqlite3
 import threading
 from datetime import datetime
 from pathlib import Path
+
+try:
+    import sqlite3
+except ImportError:  # pragma: no cover - Android p4a cpython may lack sqlite3
+    sqlite3 = None
 
 from .models import HistoryEntry
 
@@ -26,7 +30,83 @@ CREATE INDEX IF NOT EXISTS idx_history_ts ON history(ts);
 """
 
 
-class HistoryStore:
+class _JsonHistoryStore:
+    """Minimal JSON-file fallback implementing the same API."""
+
+    def __init__(self, db_path):
+        self.path = Path(db_path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self._lock = threading.RLock()
+        self._rows = []
+        self._next_id = 1
+        self._load()
+
+    def _load(self):
+        try:
+            if self.path.exists():
+                data = json.loads(self.path.read_text(encoding="utf-8"))
+                self._rows = list(data.get("rows", []))
+                self._next_id = max([r.get("id", 0) for r in self._rows] or [0]) + 1
+        except Exception:
+            self._rows = []
+            self._next_id = 1
+
+    def _save(self):
+        try:
+            self.path.write_text(json.dumps({"rows": self._rows}, ensure_ascii=False), encoding="utf-8")
+        except Exception:
+            pass
+
+    def add(self, e: HistoryEntry) -> int:
+        with self._lock:
+            row = {"id": self._next_id, "ts": e.ts or datetime.now().isoformat(timespec="seconds"),
+                   "subject_id": e.subjectId, "subject_name": e.subjectName, "kind": e.kind,
+                   "question": e.question, "answer": e.answer, "mode": e.mode,
+                   "hotwords": e.hotwords, "urgent": 1 if e.urgent else 0, "lang": e.lang}
+            self._rows.insert(0, row)
+            self._next_id += 1
+            self._save()
+            return row["id"]
+
+    def list(self, limit=100, query=""):
+        with self._lock:
+            q = query.strip().lower()
+            rows = self._rows[:limit]
+            if q:
+                rows = [r for r in self._rows
+                        if q in (r.get("question", "") + r.get("answer", "") + r.get("subject_name", "")).lower()][:limit]
+            return [HistoryEntry(id=r["id"], ts=r["ts"], subjectId=r.get("subject_id", ""),
+                                 subjectName=r.get("subject_name", ""), kind=r.get("kind", ""),
+                                 question=r.get("question", ""), answer=r.get("answer", ""),
+                                 mode=r.get("mode", ""), hotwords=r.get("hotwords", []),
+                                 urgent=bool(r.get("urgent")), lang=r.get("lang", "")) for r in rows]
+
+    def count(self) -> int:
+        with self._lock:
+            return len(self._rows)
+
+    def count_today(self) -> int:
+        today = datetime.now().strftime("%Y-%m-%d")
+        with self._lock:
+            return sum(1 for r in self._rows if r.get("ts", "").startswith(today))
+
+    def clear(self):
+        with self._lock:
+            self._rows = []
+            self._save()
+
+    def export(self, path) -> int:
+        with self._lock:
+            p = Path(path)
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_text(json.dumps(self._rows, ensure_ascii=False, indent=2), encoding="utf-8")
+            return len(self._rows)
+
+    def close(self):
+        pass
+
+
+class _SqliteHistoryStore:
     def __init__(self, db_path: str | Path):
         self.path = Path(db_path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -48,7 +128,7 @@ class HistoryStore:
             self._conn.commit()
             return cur.lastrowid
 
-    def list(self, limit: int = 100, query: str = "") -> list[HistoryEntry]:
+    def list(self, limit: int = 100, query: str = "") -> list:
         with self._lock:
             if query.strip():
                 like = f"%{query.strip()}%"
@@ -58,10 +138,10 @@ class HistoryStore:
             else:
                 rows = self._conn.execute(
                     "SELECT * FROM history ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
-        return [self._row_to_entry(r) for r in rows]
+        return [self._row(r) for r in rows]
 
     @staticmethod
-    def _row_to_entry(r) -> HistoryEntry:
+    def _row(r) -> HistoryEntry:
         try:
             hw = json.loads(r[8]) if r[8] else []
         except Exception:
@@ -98,3 +178,13 @@ class HistoryStore:
     def close(self):
         with self._lock:
             self._conn.close()
+
+
+def HistoryStore(db_path):
+    """Factory: SQLite when available, JSON-file fallback otherwise."""
+    if sqlite3 is not None:
+        try:
+            return _SqliteHistoryStore(db_path)
+        except Exception:
+            pass
+    return _JsonHistoryStore(db_path)

@@ -1,11 +1,28 @@
 """Microphone capture via sounddevice (optional dependency)."""
 from __future__ import annotations
+import array
 import queue
 import threading
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:  # Android builds do not bundle numpy
+    np = None
 
 SAMPLE_RATE = 16000
+
+
+def _rms_level(indata) -> float:
+    """Root-mean-square level 0..1 of an int16 buffer (numpy-free fallback)."""
+    if np is not None:
+        return float(np.sqrt(np.mean(np.square(indata.astype(np.float32) / 32768.0))))
+    samples = array.array("h", indata.tobytes())
+    if not len(samples):
+        return 0.0
+    acc = 0.0
+    for s in samples:
+        acc += (s / 32768.0) ** 2
+    return (acc / len(samples)) ** 0.5
 
 
 class AudioCapture:
@@ -39,8 +56,7 @@ class AudioCapture:
 
     def _callback(self, indata, frames, time_info, status):
         if self.on_level:
-            rms = float(np.sqrt(np.mean(np.square(indata.astype(np.float32) / 32768.0))))
-            self.on_level(min(1.0, rms * 4.0))
+            self.on_level(min(1.0, _rms_level(indata) * 4.0))
         try:
             self._queue.put_nowait(indata.tobytes())
         except queue.Full:

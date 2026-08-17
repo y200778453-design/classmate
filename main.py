@@ -1,5 +1,46 @@
-"""Android / desktop entry point (must be named main.py for pyside6-android-deploy)."""
-from run import main
+"""Android / desktop entry point (must be named main.py for pyside6-android-deploy).
+
+Wraps the real entry so startup crashes are written to classmate_crash.log
+instead of disappearing silently on Android.
+"""
+import sys
+import traceback
+from pathlib import Path
+
+
+def _crash_log_dir() -> Path:
+    try:
+        from jnius import autoclass  # type: ignore
+        activity = autoclass("org.kivy.android.PythonActivity").mActivity
+        files = activity.getExternalFilesDir(None)
+        if files:
+            return Path(files.getAbsolutePath())
+    except Exception:
+        pass
+    try:
+        from PySide6.QtCore import QStandardPaths
+        p = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.AppDataLocation)
+        if p:
+            return Path(p)
+    except Exception:
+        pass
+    return Path.home() / ".classmate"
+
+
+def main():
+    try:
+        from run import main as run_main
+        run_main()
+    except SystemExit:
+        raise
+    except Exception:
+        log_dir = _crash_log_dir()
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+            (log_dir / "classmate_crash.log").write_text(traceback.format_exc(), encoding="utf-8")
+        except Exception:
+            pass
+        raise
 
 
 if __name__ == "__main__":
