@@ -19,7 +19,8 @@ PERMISSIONS = [
     "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
 ]
 
-REQUIREMENTS = "python3,shiboken6,PySide6,requests,pyjnius"
+# PySide6 Android wheels are cp311-only; p4a defaults to 3.14 -> must pin 3.11
+REQUIREMENTS = "python3==3.11.9,shiboken6,PySide6,requests,pyjnius"
 
 PACKAGE_NAME = "classmate"
 PACKAGE_DOMAIN = "edu.kwnc"
