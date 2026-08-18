@@ -35,7 +35,7 @@ jobs:
           profile: pixel_5
           force-avd-creation: true
           emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
-          disable-animations: true
+          disable-animations: false
           script: |
             apk=$(find /tmp/apk -type f -name '*.apk' | head -1)
             test -n "$apk"
