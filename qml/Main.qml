@@ -100,6 +100,7 @@ ApplicationWindow {
     NavBar {
         id: navBar
         z: 40
+        anchors.bottom: parent.bottom
         onSelected: function(i) { root.switchPage(i) }
     }
 
