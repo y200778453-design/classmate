@@ -202,7 +202,7 @@ Item {
                     anchors.fill: parent
                     spacing: Theme.s3
                     CmText { text: "關於"; font.pixelSize: 14; font.bold: true }
-                    CmText { Layout.fillWidth: true; text: "課堂智聽 ClassMate v1.3.0"; font.pixelSize: 12; color: Theme.textPrimary }
+                    CmText { Layout.fillWidth: true; text: "課堂智聽 ClassMate v1.5.0"; font.pixelSize: 12; color: Theme.textPrimary }
                     CmText {
                         Layout.fillWidth: true
                         text: "粵 · 英 · 普三語課堂監聽助手。問題偵測、點名提醒、熱詞知識庫與歷史紀錄均在本機離線運作；AI 接駁為可選增強。"

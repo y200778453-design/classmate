@@ -25,7 +25,7 @@ REQUIREMENTS = "hostpython3==3.11.9,python3==3.11.9,shiboken6,PySide6,requests,p
 
 PACKAGE_NAME = "classmate"
 PACKAGE_DOMAIN = "edu.kwnc"
-VERSION = "1.3"
+VERSION = "1.5"
 INCLUDE_EXTS = "py,pyc,png,jpg,kv,atlas,ttf,qml,js,json"
 DEBUG_KEYSTORE = "tools/classmate-debug.keystore"
 DEBUG_KEYSTORE_PASS = "android"
