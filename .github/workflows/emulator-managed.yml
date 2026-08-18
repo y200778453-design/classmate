@@ -29,12 +29,12 @@ jobs:
       - name: Start managed Android emulator and prove launch
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
-          target: google_apis
+          api-level: 30
+          target: default
           arch: x86_64
           profile: pixel_5
           force-avd-creation: true
-          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot
           disable-animations: false
           script: |
             apk=$(find /tmp/apk -type f -name '*.apk' | head -1)
