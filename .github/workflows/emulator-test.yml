@@ -66,21 +66,31 @@ jobs:
           export ANDROID_HOME=$ANDROID_SDK_ROOT
           echo no | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
             -n test -k 'system-images;android-35;google_apis;x86_64' -d pixel_5 --force
-      - name: Start emulator (software emulation, no KVM)
+      - name: Start emulator (KVM preferred, software fallback)
         run: |
           export ANDROID_HOME=$ANDROID_SDK_ROOT
-          nohup $ANDROID_HOME/emulator/emulator -avd test -no-window -no-audio -no-boot-anim \
-            -no-accel -gpu swiftshader_indirect -no-snapshot -no-metrics > /tmp/emulator.log 2>&1 &
+          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
+          export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
+          echo '--- kvm check ---'
+          ls -la /dev/kvm || echo 'no kvm'
+          ACCEL=''
+          if [ ! -e /dev/kvm ]; then ACCEL='-no-accel'; echo 'using software emulation'; fi
+          nohup $ANDROID_HOME/emulator/emulator -avd test -no-window -no-audio -no-boot-anim $ACCEL \
+            -gpu swiftshader_indirect -no-snapshot -no-metrics > /tmp/emulator.log 2>&1 &
           echo 'waiting for device...'
-          adb wait-for-device
-          for i in $(seq 1 120); do
+          timeout 900 adb wait-for-device || true
+          for i in $(seq 1 90); do
             boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
             if [ "$boot" = "1" ]; then echo 'BOOTED'; break; fi
-            sleep 15
+            sleep 20
           done
-          adb shell getprop sys.boot_completed
+          echo 'boot_completed='$(adb shell getprop sys.boot_completed 2>/dev/null)
+          adb devices
+          tail -30 /tmp/emulator.log || true
       - name: Install and launch ClassMate
         run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export PATH=$ANDROID_HOME/platform-tools:$PATH
           adb install -r /tmp/apk/classmate.apk
           adb shell am start -n edu.kwnc.classmate/org.kivy.android.PythonActivity
           echo 'waiting for app...'
@@ -91,6 +101,8 @@ jobs:
           adb logcat -d -t 300 2>/dev/null | grep -iE 'FATAL|AndroidRuntime|python|ClassMate' | tail -40 || echo 'no log lines'
       - name: Screenshot + artifacts
         run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export PATH=$ANDROID_HOME/platform-tools:$PATH
           adb exec-out screencap -p > /tmp/classmate_screen.png
           adb logcat -d > /tmp/logcat.txt || true
           mkdir -p /tmp/artifacts
