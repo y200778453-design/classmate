@@ -27,6 +27,9 @@ PACKAGE_NAME = "classmate"
 PACKAGE_DOMAIN = "edu.kwnc"
 VERSION = "1.3"
 INCLUDE_EXTS = "py,pyc,png,jpg,kv,atlas,ttf,qml,js,json"
+DEBUG_KEYSTORE = "tools/classmate-debug.keystore"
+DEBUG_KEYSTORE_PASS = "android"
+DEBUG_KEY_PASS = "android"
 
 
 def set_value(lines, key, value):
@@ -56,6 +59,9 @@ def main():
     lines = set_value(lines, "package.domain", PACKAGE_DOMAIN)
     lines = set_value(lines, "version", VERSION)
     lines = set_value(lines, "source.include_exts", INCLUDE_EXTS)
+    lines = set_value(lines, "android.debug_keystore", DEBUG_KEYSTORE)
+    lines = set_value(lines, "android.debug_keystore_pass", DEBUG_KEYSTORE_PASS)
+    lines = set_value(lines, "android.debug_key_pass", DEBUG_KEY_PASS)
     spec.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("[patch] requirements:", REQUIREMENTS)
     print("[patch] permissions:", ", ".join(PERMISSIONS))
