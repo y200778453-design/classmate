@@ -49,9 +49,14 @@ jobs:
           export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
           export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
           nohup $ANDROID_HOME/emulator/emulator -avd classmate_test -no-window -no-audio \
-            -no-boot-anim -gpu swiftshader_indirect -no-snapshot -no-metrics > /tmp/emulator.log 2>&1 &
+            -no-boot-anim -gpu swiftshader_indirect -accel off -wipe-data -no-snapshot \
+            -no-metrics > /tmp/emulator.log 2>&1 &
           adb start-server
-          timeout 600 adb wait-for-device
+          if ! timeout 900 adb wait-for-device; then
+            echo '=== emulator failure log ==='
+            tail -120 /tmp/emulator.log || true
+            exit 1
+          fi
           for i in $(seq 1 60); do
             boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
             if [ "$boot" = "1" ]; then echo BOOTED; break; fi
