@@ -1,0 +1,59 @@
+name: Android Emulator Proof (managed AVD)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  emulator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download existing x86 APK artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq unzip
+          id=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "User-Agent: dsh" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/artifacts?per_page=100" \
+            | jq -r '.artifacts[] | select(.name=="classmate-apk-x86_64" and .expired==false) | .id' | head -1)
+          test -n "$id"
+          mkdir -p /tmp/apk
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "User-Agent: dsh" \
+            -o /tmp/apk/a.zip "https://api.github.com/repos/${{ github.repository }}/actions/artifacts/$id/zip"
+          unzip -o /tmp/apk/a.zip -d /tmp/apk
+          find /tmp/apk -type f -name '*.apk' -print
+
+      - name: Start managed Android emulator and prove launch
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_5
+          force-avd-creation: true
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
+          disable-animations: true
+          script: |
+            apk=$(find /tmp/apk -type f -name '*.apk' | head -1)
+            test -n "$apk"
+            adb install -r "$apk"
+            adb shell am start -n edu.kwnc.classmate/org.kivy.android.PythonActivity
+            sleep 45
+            echo '=== PID ==='
+            adb shell pidof edu.kwnc.classmate
+            echo '=== LOG ==='
+            adb logcat -d -t 500 | grep -iE 'FATAL|AndroidRuntime|python|ClassMate' | tail -100 || true
+            mkdir -p /tmp/proof
+            adb exec-out screencap -p > /tmp/proof/classmate_emulator.png
+            adb logcat -d > /tmp/proof/logcat.txt || true
+
+      - name: Upload emulator proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: classmate-emulator-proof-managed
+          path: /tmp/proof
+          if-no-files-found: warn
