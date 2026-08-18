@@ -1,0 +1,105 @@
+name: Emulator Test (Android x86_64)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-x86:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: System dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jdk unzip git libegl1 libxkbcommon0 \
+            libdbus-1-3 libfontconfig1 libnss3 libasound2t64 \
+            libtool autoconf automake pkg-config zlib1g-dev libncurses-dev libffi-dev libltdl-dev
+      - name: Install deploy tool
+        run: pip install "PySide6==6.11.1" jinja2 pkginfo tqdm "packaging==24.1"
+      - name: Download Android NDK r26b + SDK (official script)
+        run: |
+          pip install GitPython
+          git clone --depth 1 --branch 6.11 https://github.com/qtproject/pyside-pyside-setup /tmp/pyside-setup
+          python /tmp/pyside-setup/tools/cross_compile_android/main.py \
+            --download-only --skip-update --auto-accept-license -p aarch64 --api-level 35
+      - name: Download Qt for Python Android wheels (x86_64)
+        run: |
+          mkdir -p models/wheels
+          curl -fL -o models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_x86_64.whl \
+            https://download.qt.io/official_releases/QtForPython/pyside6/pyside6-6.11.1-6.11.1-cp311-cp311-android_x86_64.whl
+          curl -fL -o models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_x86_64.whl \
+            https://download.qt.io/official_releases/QtForPython/shiboken6/shiboken6-6.11.1-6.11.1-cp311-cp311-android_x86_64.whl
+      - name: Build x86_64 APK
+        run: |
+          python tools/run_deploy.py --name ClassMate --force --keep-deployment-files \
+            --wheel-pyside models/wheels/pyside6-6.11.1-6.11.1-cp311-cp311-android_x86_64.whl \
+            --wheel-shiboken models/wheels/shiboken6-6.11.1-6.11.1-cp311-cp311-android_x86_64.whl
+          test -n "$(find . -type f -name '*.apk' | head -1)" || { echo 'NO APK'; exit 1; }
+          mkdir -p /tmp/apk
+          cp $(find . -type f -name '*.apk' | grep -v '/lib/' | head -1) /tmp/apk/classmate.apk
+      - name: Upload x86_64 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: classmate-apk-x86_64
+          path: /tmp/apk/classmate.apk
+
+  emulator-test:
+    needs: build-x86
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: classmate-apk-x86_64
+          path: /tmp/apk
+      - name: Install emulator + system image
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null 2>&1 || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install \
+            "emulator" "system-images;android-35;google_apis;x86_64" "platform-tools"
+      - name: Create AVD
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          echo no | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+            -n test -k 'system-images;android-35;google_apis;x86_64' -d pixel_5 --force
+      - name: Start emulator (software emulation, no KVM)
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          nohup $ANDROID_HOME/emulator/emulator -avd test -no-window -no-audio -no-boot-anim \
+            -no-accel -gpu swiftshader_indirect -no-snapshot -no-metrics > /tmp/emulator.log 2>&1 &
+          echo 'waiting for device...'
+          adb wait-for-device
+          for i in $(seq 1 120); do
+            boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+            if [ "$boot" = "1" ]; then echo 'BOOTED'; break; fi
+            sleep 15
+          done
+          adb shell getprop sys.boot_completed
+      - name: Install and launch ClassMate
+        run: |
+          adb install -r /tmp/apk/classmate.apk
+          adb shell am start -n edu.kwnc.classmate/org.kivy.android.PythonActivity
+          echo 'waiting for app...'
+          sleep 90
+          echo '=== pid ==='
+          adb shell pidof edu.kwnc.classmate || echo 'APP NOT RUNNING'
+          echo '=== crash check ==='
+          adb logcat -d -t 300 2>/dev/null | grep -iE 'FATAL|AndroidRuntime|python|ClassMate' | tail -40 || echo 'no log lines'
+      - name: Screenshot + artifacts
+        run: |
+          adb exec-out screencap -p > /tmp/classmate_screen.png
+          adb logcat -d > /tmp/logcat.txt || true
+          mkdir -p /tmp/artifacts
+          cp /tmp/classmate_screen.png /tmp/artifacts/ || true
+          cp /tmp/logcat.txt /tmp/artifacts/ || true
+          cp /tmp/emulator.log /tmp/artifacts/ || true
+          ls -la /tmp/artifacts
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: emulator-test-results
+          path: /tmp/artifacts
