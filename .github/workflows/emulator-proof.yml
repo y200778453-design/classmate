@@ -1,0 +1,90 @@
+name: Emulator Launch Proof (existing x86 APK)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  emulator-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Download existing x86_64 APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: classmate-apk-x86_64
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: y200778453-design/classmate
+          run-id: 32106094373
+          path: /tmp/apk
+
+      - name: Install emulator + system image
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export ANDROID_SDK_HOME=$HOME
+          export ANDROID_AVD_HOME=$HOME/.android/avd
+          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
+          mkdir -p "$ANDROID_AVD_HOME"
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null 2>&1 || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install \
+            "emulator" "system-images;android-35;google_apis;x86_64" "platform-tools"
+
+      - name: Create AVD with stable paths
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export ANDROID_SDK_HOME=$HOME
+          export ANDROID_AVD_HOME=$HOME/.android/avd
+          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
+          mkdir -p "$ANDROID_AVD_HOME"
+          echo no | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+            -n classmate_test -k 'system-images;android-35;google_apis;x86_64' -d pixel_5 --force
+          echo '=== AVDs ==='
+          $ANDROID_HOME/emulator/emulator -list-avds
+          test -f "$ANDROID_AVD_HOME/classmate_test.ini"
+
+      - name: Boot Android emulator
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export ANDROID_SDK_HOME=$HOME
+          export ANDROID_AVD_HOME=$HOME/.android/avd
+          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
+          export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
+          nohup $ANDROID_HOME/emulator/emulator -avd classmate_test -no-window -no-audio \
+            -no-boot-anim -gpu swiftshader_indirect -no-snapshot -no-metrics > /tmp/emulator.log 2>&1 &
+          adb start-server
+          timeout 600 adb wait-for-device
+          for i in $(seq 1 60); do
+            boot=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+            if [ "$boot" = "1" ]; then echo BOOTED; break; fi
+            sleep 10
+          done
+          adb shell getprop sys.boot_completed
+          adb devices
+
+      - name: Install launch and prove process
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export PATH=$ANDROID_HOME/platform-tools:$PATH
+          APK=$(find /tmp/apk -type f -name '*.apk' | head -1)
+          test -n "$APK"
+          adb install -r "$APK"
+          adb shell am start -n edu.kwnc.classmate/org.kivy.android.PythonActivity
+          sleep 60
+          echo '=== PID ==='
+          adb shell pidof edu.kwnc.classmate
+          echo '=== LOGCAT ==='
+          adb logcat -d -t 500 | grep -iE 'FATAL|AndroidRuntime|python|ClassMate' | tail -80 || true
+
+      - name: Capture emulator proof
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          export PATH=$ANDROID_HOME/platform-tools:$PATH
+          mkdir -p /tmp/proof
+          adb exec-out screencap -p > /tmp/proof/classmate_emulator.png
+          adb logcat -d > /tmp/proof/logcat.txt || true
+          cp /tmp/emulator.log /tmp/proof/emulator.log || true
+
+      - name: Upload emulator proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: classmate-emulator-proof
+          path: /tmp/proof
